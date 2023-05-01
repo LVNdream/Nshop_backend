@@ -51,18 +51,21 @@ class PaymentService {
     }
 
 
-    // async update(id, entity) {
-    //     const filter = {
-    //         _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
-    //     };
-    //     const update = this.extractPaymentData(entity);
-    //     const result = await this.product.findOneAndUpdate(
-    //         filter,
-    //         { $set: update },
-    //         { returnDocument: "after" }
-    //     );
-    //     return result.value;
-    // }
+    async updateOrder(id, entity) {
+        const filter = {
+            _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+        };
+        const update = {
+            trangthai:entity
+        };
+        console.log(filter,update)
+        const result = await this.payment.findOneAndUpdate(
+            filter,
+            { $set: update},
+            { returnDocument: "after" }
+        );
+        return result.value;
+    }
 
     async deleteOrdered(idhd) {
         const result = await this.payment.findOneAndDelete({

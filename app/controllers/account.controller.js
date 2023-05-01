@@ -23,8 +23,9 @@ exports.createAccount = async (req, res, next) => {
 // ham de dang nhap tai khoan
 
 exports.loginAccount = async (req, res, next) => {
+    let isLogin;
 
-    if (req.body.email) {
+    if (req.body.email&&req.body.email!='') {
         try {
             const accountService = new AccountService(MongoDB.client);
 
@@ -33,22 +34,24 @@ exports.loginAccount = async (req, res, next) => {
             if (user) {
 
                 const resultPW = bcrypt.compareSync(req.body.matkhau, user.matkhau);
-                if(resultPW){
+                if (resultPW) {
                     delete user.matkhau;
+                    isLogin = true;
                     return res.send(
-                        { user: user, message: 'Ban da dang nhap thanh cong!' }
+                        { user: user, message: 'Ban da dang nhap thanh cong!', isLogin }
                     )
                 }
-                else{
+                else {
+                    isLogin = false;
                     return res.send(
-                        { user: null, message: 'Ban da nhap sai mat khau!' }
+                        { user: null, message: 'Ban da nhap sai mat khau!', isLogin }
                     )
                 }
             }
             else {
+                isLogin=false;
                 return res.send(
-
-                    { user: null, message: 'Ban da nhap sai email' })
+                    { user: null, message: 'Ban da nhap sai email', isLogin })
             }
 
         } catch (error) {
@@ -58,8 +61,9 @@ exports.loginAccount = async (req, res, next) => {
             );
         }
     } else {
+        isLogin=false;
         return res.send(
-            { user: null, message: 'Khong co tai khoan giong email' }
+            { user: null, message: 'Khong co tai khoan giong email',isLogin}
         )
     }
 

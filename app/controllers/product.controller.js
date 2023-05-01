@@ -10,12 +10,12 @@ exports.create = async (req, res,next) => {
 
         // console.log(req.body);
         const productService = new ProductService(MongoDB.client);
-        //console.log(req.body);
+        console.log(req.body);
         const document = await productService.create(req.body);
         // const docume nt = contactService.extractConactData(req.body);
         // console.log(document);
 
-        return res.send(document);
+        return res.send("Ban da them thanh cong");
     } catch (error) {
         console.log(error);
         return next(
@@ -36,7 +36,7 @@ exports.findAll = async (req, res,next) => {
 };
 
 exports.findOne = async (req, res, next) => {
-    console.log(req.params.id);
+    // console.log(req.params.id);
     try {
         const productService = new ProductService(MongoDB.client);
         const productById = await productService.findById(req.params.id);
@@ -60,7 +60,7 @@ exports.update = async (req, res,next) => {
         if(!document){
             return (next(new ApiError(404,"Product ot found")))
         }
-        return res.send({message:" Product was updated successfully"});
+        return res.send(" Cập nhật sản phẩm thành công");
     } catch (error) {
         return (next(ApiError(500,`Error updating product with id = ${req.params.id}`)));
     }

@@ -46,14 +46,39 @@ exports.createOrder = async (req, res, next) => {
 };
 
 exports.findAll = async (req, res, next) => {
-    const arrayOrder = [];
+    let arrayOrders = [];
+    // console.log(121231231232)
     try {
         const paymentService = new PaymentService(MongoDB.client);
-        arrayOrder = await paymentService.find({});
+        const detailOrderService = new DetailOrderService(MongoDB.client);
+        const orders = await paymentService.find({});
+         if (orders.length > 0) {
+            for (let index = 0; index < orders.length; index++) {
+                const order = orders[index];
+                const detailProducts = await detailOrderService.findDetailOrderById(order._id)
+                const OrderData = {
+                    _id: order._id,
+                    thoigian: order.thoigian,
+                    tenkh: order.tenkh,
+                    diachi: order.diachi,
+                    sodienthoai: order.sodienthoai,
+                    trangthai: order.trangthai,
+                    products: detailProducts,
+                    tongtien: order.tongtien
+                }
+                // console.log(OrderData.products);
+                arrayOrders[index] = OrderData
+            }
+            return res.send(arrayOrders)
+        }
+        else {
+            return res.send('Ban chua co hoa don')
+        }
+        // console.log(arrayOrder)
     } catch (error) {
+        // console.log(error);
         return next(new ApiError(500, "An error occurred while retrieving order"));
     }
-    return res.send(arrayOrder);
 };
 
 exports.findOrderByEmail = async (req, res, next) => {
@@ -84,7 +109,7 @@ exports.findOrderByEmail = async (req, res, next) => {
             return res.send(allOrders)
         }
         else {
-            return res.send(true)
+            return res.send('Ban chua co hoa don')
         }
 
     } catch (error) {
@@ -93,21 +118,21 @@ exports.findOrderByEmail = async (req, res, next) => {
     }
 };
 
-// exports.update = async (req, res,next) => {
-//     if (Object.keys(req.body).length == 0) {
-//         return next(new ApiError(400, "Data to upadte not be empty"));
-//     }
-//     try {
-//         const productService = new ProductService(MongoDB.client);
-//         const document = await productService.update(req.params.id,req.body);
-//         if(!document){
-//             return (next(new ApiError(404,"Product ot found")))
-//         }
-//         return res.send({message:" Product was updated successfully"});
-//     } catch (error) {
-//         return (next(ApiError(500,`Error updating product with id = ${req.params.id}`)));
-//     }
-// };
+exports.updateOrder = async (req, res,next) => {
+    if (Object.keys(req.body).length == 0) {
+        return next(new ApiError(400, "Data to upadte not be empty"));
+    }
+    try {
+        const paymentService = new PaymentService(MongoDB.client);
+        const resultUpdate = await paymentService.updateOrder(req.body.id,req.body.trangthai);
+        if(!resultUpdate){
+            return (next(new ApiError(404,"Product not found")))
+        }
+        return res.send({message:" Order was updated successfully"});
+    } catch (error) {
+        return (next(ApiError(500,`Error updating product with id = ${req.body.id}`)));
+    }
+};
 
 // exports.delete = (req, res) => {
 //     res.send({ message: "delete hanlder" });

@@ -20,9 +20,9 @@ class ProductService {
     }
     async create(entity) {
         const entityDB = this.extractConactData(entity);
-        console.log(entityDB);
+        // console.log(entityDB);
         const result = await this.product.insertOne(entityDB, { returnDocument: "after", upsert: true });
-        console.log(result.insertedId);
+        // console.log(result.insertedId);
         return result.insertedId;
 
     }

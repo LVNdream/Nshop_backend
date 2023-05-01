@@ -3,8 +3,17 @@ const products = require("../controllers/product.controller");
 const router = express.Router();
 router.route("/")
     .get(products.findAll)
-    .post(products.create)
+    // .post(products.create)
     .delete(products.deleteAll);
+router.route("/admin/addproduct")
+    // .get(products.findAll)
+    .post(products.create);
+// .delete(products.deleteAll);
+router.route("/admin/FormEditProduct/:id")
+    // .get(products.findAll)
+    .get(products.findOne)
+    .put(products.update);
+// .delete(products.deleteAll);
 
 router.route("/favorite")
     .get(products.findAllFavorite);

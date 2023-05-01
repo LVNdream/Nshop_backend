@@ -7,17 +7,17 @@ router.route("/")
 // .delete(products.deleteAll);
 
 
+router.route("/cancleOrder")
+    // .get(payment.findOrderByEmail)
+    .post(payment.cancleOrder);
+
+router.route("/admin/updateOrder")
+    .get(payment.findAll)
+    .put(payment.updateOrder);
+    
 router.route("/:email")
     // .get(payment.findOrderByEmail)
     .get(payment.findOrderByEmail);
-
-router.route("/cancleOrder")
-    // .get(payment.findOrderByEmail)
-    .post(payment.cancleOrder)
-
-// router.route("/favorite")
-//     .get(products.findAllFavorite);
-
 // router.route("/:id")
 //     .get(products.findOne)
 //     .put(products.update)

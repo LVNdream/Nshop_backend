@@ -9,7 +9,6 @@ function router(app) {
     app.use('/Nshop', productRouter);
     app.use('/Nshop/payment', paymentRouter);
     app.use('/Nshop/account', accountRouter);
-
 }
 
 module.exports = router;
