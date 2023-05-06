@@ -49,6 +49,11 @@ class ProductService {
         );
         return result.value;
     }
+    async findByName(tensp) {
+        return await this.find({
+            tensp: { $regex: new RegExp(tensp), $options: "i" },
+        });
+    }
 
 }
 module.exports = ProductService;

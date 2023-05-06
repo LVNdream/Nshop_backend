@@ -73,6 +73,9 @@ class PaymentService {
         });
         return result.value;
     }
+    async filterOrderByDate(start,end) {
+        return await this.find({thoigian:{$gte:new Date(start),$lt: new Date(end)}})
+    }   
 
 }
 module.exports = PaymentService;

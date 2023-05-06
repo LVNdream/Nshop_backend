@@ -7,10 +7,18 @@ exports.createAccount = async (req, res, next) => {
     // console.log('tao khoan');
     try {
 
-        // console.log(req.body);
+        console.log(req.body);
         const accountService = new AccountService(MongoDB.client);
-
-        const created = await accountService.createAccount(req.body);
+        const userTest = await accountService.findByEmail(req.body.email);
+        // console.log(userTest)
+        if(userTest==null){
+            const created = await accountService.createAccount(req.body);
+            return res.send('Da tao thanh cong tai khoan');
+        }
+        else{
+            return res.send('Email da duoc su dung');
+        }
+        // const created = await accountService.createAccount(req.body);
 
         return res.send('Da tao thanh cong tai khoan');
     } catch (error) {
@@ -25,7 +33,7 @@ exports.createAccount = async (req, res, next) => {
 exports.loginAccount = async (req, res, next) => {
     let isLogin;
 
-    if (req.body.email&&req.body.email!='') {
+    if (req.body.email && req.body.email != '') {
         try {
             const accountService = new AccountService(MongoDB.client);
 
@@ -49,7 +57,7 @@ exports.loginAccount = async (req, res, next) => {
                 }
             }
             else {
-                isLogin=false;
+                isLogin = false;
                 return res.send(
                     { user: null, message: 'Ban da nhap sai email', isLogin })
             }
@@ -61,9 +69,9 @@ exports.loginAccount = async (req, res, next) => {
             );
         }
     } else {
-        isLogin=false;
+        isLogin = false;
         return res.send(
-            { user: null, message: 'Khong co tai khoan giong email',isLogin}
+            { user: null, message: 'Khong co tai khoan giong email', isLogin }
         )
     }
 

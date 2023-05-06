@@ -52,7 +52,7 @@ exports.findAll = async (req, res, next) => {
         const paymentService = new PaymentService(MongoDB.client);
         const detailOrderService = new DetailOrderService(MongoDB.client);
         const orders = await paymentService.find({});
-         if (orders.length > 0) {
+        if (orders.length > 0) {
             for (let index = 0; index < orders.length; index++) {
                 const order = orders[index];
                 const detailProducts = await detailOrderService.findDetailOrderById(order._id)
@@ -69,10 +69,10 @@ exports.findAll = async (req, res, next) => {
                 // console.log(OrderData.products);
                 arrayOrders[index] = OrderData
             }
-            return res.send(arrayOrders)
+            return res.send({ arrayOrders: arrayOrders, isEmpty: false })
         }
         else {
-            return res.send('Ban chua co hoa don')
+            return res.send({ arrayOrders: arrayOrders, isEmpty: true })
         }
         // console.log(arrayOrder)
     } catch (error) {
@@ -106,10 +106,10 @@ exports.findOrderByEmail = async (req, res, next) => {
                 // console.log(OrderData.products);
                 allOrders[index] = OrderData
             }
-            return res.send(allOrders)
+            return res.send({ arrayOrders: allOrders, isEmpty: false })
         }
         else {
-            return res.send('Ban chua co hoa don')
+            return res.send({ arrayOrders: allOrders, isEmpty: true })
         }
 
     } catch (error) {
@@ -118,33 +118,21 @@ exports.findOrderByEmail = async (req, res, next) => {
     }
 };
 
-exports.updateOrder = async (req, res,next) => {
+exports.updateOrder = async (req, res, next) => {
     if (Object.keys(req.body).length == 0) {
         return next(new ApiError(400, "Data to upadte not be empty"));
     }
     try {
         const paymentService = new PaymentService(MongoDB.client);
-        const resultUpdate = await paymentService.updateOrder(req.body.id,req.body.trangthai);
-        if(!resultUpdate){
-            return (next(new ApiError(404,"Product not found")))
+        const resultUpdate = await paymentService.updateOrder(req.body.id, req.body.trangthai);
+        if (!resultUpdate) {
+            return (next(new ApiError(404, "Product not found")))
         }
-        return res.send({message:" Order was updated successfully"});
+        return res.send({ message: " Order was updated successfully" });
     } catch (error) {
-        return (next(ApiError(500,`Error updating product with id = ${req.body.id}`)));
+        return (next(ApiError(500, `Error updating product with id = ${req.body.id}`)));
     }
 };
-
-// exports.delete = (req, res) => {
-//     res.send({ message: "delete hanlder" });
-// };
-
-// exports.deleteAll = (req, res) => {
-//     res.send({ message: "deleteAll hanlder" });
-// };
-
-// exports.findAllFavorite = (req, res) => {
-//     res.send({ message: "findAllFavorite hanlder" });
-// };
 
 exports.cancleOrder = async (req, res, next) => {
 
@@ -162,7 +150,7 @@ exports.cancleOrder = async (req, res, next) => {
             if (resultDeleteOrder && resultDeleteDetailOrder > 0) {
                 res.send('Ban da xoa hoa don thanh cong');
             }
-            else{
+            else {
                 res.send('xoa khong thanh cong')
             }
 
@@ -176,6 +164,66 @@ exports.cancleOrder = async (req, res, next) => {
         return next(new ApiError(500, `Erorr  retrieving  product with id=${req.params.id}}`));
     }
 
-}
+};
+// ham show order theo ngay
+exports.showOrderFilterByDate = async (req, res, next) => {
+    console.log(req.body)
+    const start = req.body.start;
+    const end = req.body.end;
+    // console.log(new Date(ngay))
+
+    try {
+
+        if (start != '' && end!='') {
+            const paymentService = new PaymentService(MongoDB.client);
+            const OrderFiterByDate = await paymentService.filterOrderByDate(start,end);
+            console.log(OrderFiterByDate)
+            if (OrderFiterByDate.length > 0) {
+                return res.send({ arrayOrders: OrderFiterByDate, isEmpty: false });
+            }
+            else {
+                return res.send({ arrayOrders: null, isEmpty: true });
+            }
+
+        }
+        else {
+            return res.send({ arrayOrders:'Moi ban nhap ngay bat dau va ngay ket thuc', isEmpty: true });
+        }
+
+    } catch (error) {
+        console.log(error)
+        return (next(new ApiError(500, `Error filter order`)));
+    }
+    // let AllOrderByDate = [];
+    // let issetHD_ByDate_Admin = false;
+    // if (req.body.ngay) {
+    //   const order = await adminModel.selectOrderByDate(req.body.ngay);
+    //   if (order != null) {
+    //     issetHD_ByDate_Admin = true;
+    //     for (let i = 0; i < order.length; i++) {
+    //       // console.log(value);
+    //       AllOrderByDate[i] = {
+    //         listItem: await adminModel.selectCTHD(order[i].idhd),
+    //         idhd: order[i].idhd,
+    //         hovaten: order[i].hovaten,
+    //         ngaylaphd: order[i].ngaylaphd,
+    //         diachichitiet: order[i].diachichitiet,
+    //         nhanhang: order[i].nhanhang,
+    //         trangthai: order[i].trangthai,
+    //         tongtien: order[i].tongtien,
+
+    //       }
+    //     }
+    //     // console.log(AllOrderByDate);
+    //     res.render('admin', { AllOrder: AllOrderByDate, issetHD_Admin: issetHD_ByDate_Admin });
+    //   }
+    //   else {
+    //     res.render('admin', { AllOrder: AllOrderByDate, issetHD_Admin: issetHD_ByDate_Admin });
+    //   }
+    // }
+    // else {
+    //   res.render('admin', { AllOrder: AllOrderByDate, issetHD_Admin: issetHD_ByDate_Admin });
+    // }
+};
 
 

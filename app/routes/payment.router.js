@@ -14,7 +14,9 @@ router.route("/cancleOrder")
 router.route("/admin/updateOrder")
     .get(payment.findAll)
     .put(payment.updateOrder);
-    
+router.route("/admin/updateOrder/filterbydate")
+    .post(payment.showOrderFilterByDate);
+
 router.route("/:email")
     // .get(payment.findOrderByEmail)
     .get(payment.findOrderByEmail);

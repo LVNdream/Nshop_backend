@@ -5,6 +5,10 @@ router.route("/")
     .get(products.findAll)
     // .post(products.create)
     .delete(products.deleteAll);
+router.route("/filterByName")
+    .post(products.findByName)
+    // .post(products.create)
+    // .delete(products.deleteAll);
 router.route("/admin/addproduct")
     // .get(products.findAll)
     .post(products.create);

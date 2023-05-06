@@ -49,6 +49,21 @@ exports.findOne = async (req, res, next) => {
         return next(new ApiError(500,`Erorr  retrieving  product with id=${req.params.id}}`));
     }
 };
+exports.findByName = async (req, res, next) => {
+    // console.log(req.body);
+    try {
+        const productService = new ProductService(MongoDB.client);
+        const productByName = await productService.findByName(req.body.tensp);
+        if(!productByName){
+            // console.log(productByName)
+            return next(new ApiError(404,"Product not found"));
+        }
+        return res.send(productByName)
+    } catch (error) {
+        console.log(error)
+        return next(new ApiError(500,`Erorr  retrieving  product with name=${req.body.tensp}}`));
+    }
+};
 
 exports.update = async (req, res,next) => {
     if (Object.keys(req.body).length == 0) {
